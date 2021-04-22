@@ -2,11 +2,12 @@ import './App.css';
 import { AddTodoAction, RemoveTodoAction  } from './actions/TodoActions';
 import {JsonApi} from './actions/ApiActions'
 import {useDispatch,useSelector} from "react-redux";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiDelete } from 'react-icons/fi';
 
 function App() {
   const [todo , setTodo] = useState('');
+  let [responseData, setResponseData] = React.useState('');
 
   const dispatch= useDispatch();
   const Todo = useSelector(state => state.Todo);
@@ -27,12 +28,15 @@ function App() {
   const handleSubmit=(e)=>{
     e.preventDefault();
     dispatch(AddTodoAction(todo))
-    
-  };
+    };
   
   const removeHandler = (t)=>{
     dispatch(RemoveTodoAction(t));
   };
+
+  React.useEffect(()=>{
+    setResponseData(dispatch(JsonApi(todo)))
+  },[setResponseData,responseData])
   // const handleShow = ()=>{
   //   dispatch(ApiCalling(todo));
   // };
