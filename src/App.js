@@ -1,22 +1,44 @@
 import './App.css';
-import { AddTodoAction, RemoveTodoAction } from './actions/TodoActions';
+import { AddTodoAction, RemoveTodoAction  } from './actions/TodoActions';
+import {JsonApi} from './actions/ApiActions'
 import {useDispatch,useSelector} from "react-redux";
-import {useState} from "react";
+import { useEffect, useState } from "react";
+import { FiDelete } from 'react-icons/fi';
 
 function App() {
-  const [todo , setTodo] = useState();
+  const [todo , setTodo] = useState('');
 
   const dispatch= useDispatch();
-  const Todo = useSelector((state) => state.Todo);
-  const{todos} = Todo;
+  const Todo = useSelector(state => state.Todo);
+  const {todos} = Todo;
+
+  const Api = useSelector(state => state.Api);
+
+  const {success} = Api;
+
+  if (success.success === 201) {
+    var msg = "successfully created";
+  }
+
+  if (success.success === 404) {
+    var msg = "error 404"
+  }
 
   const handleSubmit=(e)=>{
     e.preventDefault();
     dispatch(AddTodoAction(todo))
+    
   };
-
+  
   const removeHandler = (t)=>{
     dispatch(RemoveTodoAction(t));
+  };
+  // const handleShow = ()=>{
+  //   dispatch(ApiCalling(todo));
+  // };
+
+  const handleCheck = (t) => {
+    // dispatch(CheckboxCheckAction(t));
   }
 
   return (
@@ -43,28 +65,38 @@ function App() {
               marginLeft:20,
               fontSize:15,
             }}
-            >Go</button>
+            >Add</button>
        </form>
+
+          {/* <button onClick = {handleShow}>Api</button> */}
+            <h3>{msg}</h3>
+
        <div className="allTodos">
          {
            todos &&
-            todos.map((t) => (
+            todos.map((t,index) => (
             <div key = {t.id} className="singleTodo ">
-            <span className="todoText">{t.todo}</span>
-            <button
-            style={{
-              padding:10,
-              borderRadius:25,
-              border:"1px solid white",
-              color:"white",
-              backgroundColor:'orangered',
-            }}
-            onClick={()=>removeHandler(t)}
-            >Delete</button>
-         </div>
+              {/* <input type="checkbox" 
+              checked={t.isCompleted} 
+              onChange={() => { handleCheck(index) }} /> */}
+              <span className="todoText">{t.todo}</span>
+              <span
+              onClick={()=>removeHandler(t)}
+              ><FiDelete/></span>
+          </div>
            ))
          }
-       </div>  
+       </div>
+
+       <div>
+        {
+          success && success.map((s,index)=>(
+            <div key= {s.id} className ="singleTodo">
+              <span className = "todoText">{s.title}</span>
+       </div> 
+       ))
+      }  
+       </div> 
       </header>
     </div>
   );
