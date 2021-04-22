@@ -4,10 +4,17 @@ import {JsonApi} from './actions/ApiActions'
 import {useDispatch,useSelector} from "react-redux";
 import React, { useEffect, useState } from "react";
 import { FiDelete } from 'react-icons/fi';
+import axios from 'axios';
 
 function App() {
   const [todo , setTodo] = useState('');
-  let [responseData, setResponseData] = React.useState('');
+  let [responseData, setResponseData] = useState('');
+
+    useEffect(()=>{
+    setResponseData(dispatch(JsonApi(todo)))
+   },[])
+
+
 
   const dispatch= useDispatch();
   const Todo = useSelector(state => state.Todo);
@@ -17,13 +24,13 @@ function App() {
 
   const {success} = Api;
 
-  if (success.success === 201) {
-    var msg = "successfully created";
-  }
+  // if (success.success === 201) {
+  //   var msg = "successfully created";
+  // }
 
-  if (success.success === 404) {
-    var msg = "error 404"
-  }
+  // if (success.success === 404) {
+  //   var msg = "error 404"
+  // }
 
   const handleSubmit=(e)=>{
     e.preventDefault();
@@ -34,12 +41,10 @@ function App() {
     dispatch(RemoveTodoAction(t));
   };
 
-  React.useEffect(()=>{
-    setResponseData(dispatch(JsonApi(todo)))
-  },[setResponseData,responseData])
-  // const handleShow = ()=>{
-  //   dispatch(ApiCalling(todo));
-  // };
+  
+  const handleShow = ()=>{
+  dispatch(JsonApi(todo))
+  };
 
   const handleCheck = (t) => {
     // dispatch(CheckboxCheckAction(t));
@@ -72,8 +77,8 @@ function App() {
             >Add</button>
        </form>
 
-          {/* <button onClick = {handleShow}>Api</button> */}
-            <h3>{msg}</h3>
+          <button onClick = {handleShow}>Api</button>
+            {/* <h3>{msg}</h3> */}
 
        <div className="allTodos">
          {
